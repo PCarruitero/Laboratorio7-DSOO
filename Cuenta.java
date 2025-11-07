@@ -14,7 +14,7 @@ public class Cuenta {
     private ArrayList<Cliente> titulares;
 
     //Constructor de la cuenta
-    public Cuenta(String numero, String tipo, float saldoInicial, ArrayList<Cliente> titulares) {
+    public Cuenta(String numero, String tipo, double saldoInicial, ArrayList<Cliente> titulares) {
         this.numero = numero;
         this.tipo = tipo;
         this.saldo = redondear(saldoInicial);

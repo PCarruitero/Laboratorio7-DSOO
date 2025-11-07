@@ -1,112 +1,61 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
+        Scanner scannerConsola = new Scanner(System.in);
+        Banco banco = new Banco(scannerConsola); // Banco fusionado (modelo + operaciones)
 
-        Scanner sc = new Scanner(System.in);
-
-        // ==========================================
-        //   CREAR OBJETOS BASE DEL SISTEMA
-        // ==========================================
-
-        Banco banco = new Banco();
-
-        // Empleado del banco
-        Empleado emp = new Empleado(
-                "12345678",
-                "Carlos López",
-                "Av. Lima 101",
-                "99999999",
-                "empleado@banco.com",
-                "EMP01",
-                "Cajero"
-        );
-        banco.registrarEmpleado(emp);
-
-        // Cliente del banco
-        Cliente cliente = new Cliente(
-                "87654321",
-                "Brayan Motta",
-                "Cayma - Arequipa",
-                "912345678",
-                "brayan@gmail.com",
-                "CLI01"
-        );
-        banco.registrarCliente(cliente);
-
-        // Crear cuenta bancaria para el cliente
-        ArrayList<Cliente> titulares = new ArrayList<>();
-        titulares.add(cliente);
-        Cuenta cuenta = banco.crearCuenta(titulares, 500.00f); // saldo inicial
-        cliente.agregarCuenta(cuenta);
-
-        int opcion;
-
-        // ==========================================
-        //                MENÚ
-        // ==========================================
+        int opcionSeleccionada;
         do {
-            System.out.println("\n-------------------------------------");
-            System.out.println("          SISTEMA DEL BANCO");
-            System.out.println("-------------------------------------");
-            System.out.println("1. Consultar saldo");
-            System.out.println("2. Realizar depósito");
-            System.out.println("3. Realizar retiro");
-            System.out.println("4. Ver movimientos");
-            System.out.println("5. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.println("\n========== MENÚ BANCO ==========");
+            System.out.println("1) Registrar empleado");
+            System.out.println("2) Registrar cliente");
+            System.out.println("3) Crear cuenta");
+            System.out.println("4) Depositar");
+            System.out.println("5) Retirar");
+            System.out.println("6) Ver saldo");
+            System.out.println("7) Ver movimientos");
+            System.out.println("8) Salir");
 
-            opcion = sc.nextInt();
+            opcionSeleccionada = Validador.leerOpcion(
+                    scannerConsola, "Seleccione una opción [1-8]: ", 1, 8
+            );
 
-            switch (opcion) {
-
-                case 1: // CONSULTAR SALDO
-                    System.out.println("\n--- CONSULTA DE SALDO ---");
-                    System.out.println("Saldo actual: S/ " + cuenta.getSaldo());
+            switch (opcionSeleccionada) {
+                case 1:
+                    banco.registrarEmpleado();
                     break;
 
-                case 2: // DEPÓSITO
-                    System.out.println("\n--- DEPÓSITO ---");
-                    System.out.print("Ingrese monto: ");
-                    float montoDep = sc.nextFloat();
-
-                    Deposito dep = emp.registrarDeposito(cuenta, montoDep, cliente);
-                    dep.procesar();
+                case 2:
+                    banco.registrarCliente();
                     break;
 
-                case 3: // RETIRO
-                    System.out.println("\n--- RETIRO ---");
-                    System.out.print("Ingrese monto: ");
-                    float montoRet = sc.nextFloat();
-
-                    Retiro ret = emp.registrarRetiro(cuenta, montoRet, cliente);
-                    ret.procesar();
+                case 3:
+                    banco.crearCuenta();
                     break;
 
-                case 4: // MOVIMIENTOS
-                    System.out.println("\n--- MOVIMIENTOS ---");
-
-                    ArrayList<Transaccion> movs = cuenta.listarMovimientos();
-
-                    if (movs.isEmpty()) {
-                        System.out.println("No hay movimientos.");
-                    } else {
-                        for (Transaccion transaccion : movs) {
-                            System.out.println(transaccion);
-                            System.out.println("-------------------------");
-                        }
-                    }
+                case 4:
+                    banco.depositar();
                     break;
 
                 case 5:
-                    System.out.println("Saliendo del sistema...");
+                    banco.retirar();
                     break;
 
-                default:
-                    System.out.println("Opción inválida.");
-            }
+                case 6:
+                    banco.verSaldo();
+                    break;
 
-        } while (opcion != 5);
+                case 7:
+                    banco.verMovimientos();
+                    break;
+
+                case 8:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+            }
+        } while (opcionSeleccionada != 8);
+
+        scannerConsola.close();
     }
 }
