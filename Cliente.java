@@ -4,7 +4,6 @@ public class Cliente extends Persona {
 
     // Atributo específico del Cliente
     private String idCliente;
-    // Agregación/Asociación: Almacena la lista de cuentas asociadas a este cliente.
     private ArrayList<Cuenta> cuentas;
 
     // Constructor principal para inicializar un Cliente.

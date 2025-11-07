@@ -67,22 +67,25 @@ public class Banco {
     public void crearCuenta() {
         System.out.println("\n=== Crear Cuenta ===");
         String numeroCuenta = Validador.leerNumeroCuenta(scannerConsola, "Nº de cuenta (10-20 dígitos): ");
-        String idODniTitular = Validador.leerIdCorto(scannerConsola, "ID/DNI del titular: ");
-        Cliente titular = buscarClientePorIdODni(idODniTitular);
-        if (titular == null) {
+
+        Cliente cliente = pedirClientePorIdODni("ID/DNI del titular: ");
+        if (cliente == null) {
             System.out.println("El cliente no existe. Regístrelo primero.");
             return;
         }
 
-        ArrayList<Cliente> titularesCuenta = new ArrayList<>();
-        titularesCuenta.add(titular);
+        String tipoCuenta = Validador.leerTipoCuenta(scannerConsola, "Tipo (AHORRO / CTE): ");
+        double saldoInicial = Validador.leerMontoPositivo(scannerConsola, "Saldo inicial: ");
 
-        String tipoCuenta = "Ahorros";
-        double saldoInicial = 0.0;
+        ArrayList<Cliente> titulares = new ArrayList<>();
+        titulares.add(cliente);
 
-        Cuenta nuevaCuenta = new Cuenta(numeroCuenta, tipoCuenta, saldoInicial, titularesCuenta);
-        listaCuentas.add(nuevaCuenta);
-        System.out.println("Cuenta creada. Nº: " + nuevaCuenta.getNumero());
+        Cuenta nuevaCuenta = new Cuenta(numeroCuenta, tipoCuenta, saldoInicial, titulares);
+
+        listaCuentas.add(nuevaCuenta);      
+        cliente.agregarCuenta(nuevaCuenta); 
+
+        System.out.println("Cuenta creada y asociada a " + cliente.getNombre());
     }
 
     // ============ OPERACIONES ============

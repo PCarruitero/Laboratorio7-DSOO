@@ -79,11 +79,34 @@ public final class Validador {
             String entrada = scanner.nextLine().trim();
             try {
                 double monto = Double.parseDouble(entrada);
-                if (monto > 0) return Math.round(monto * 100.0) / 100.0;
+                if (monto >= 0) return Math.round(monto * 100.0) / 100.0;
                 System.out.println("Debe ser > 0.");
             } catch (NumberFormatException e) {
                 System.out.println("Número inválido (use punto decimal).");
+            }                              
+        }
+    }
+
+    public static boolean confirmarSN(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String rpta = sc.nextLine().trim().toUpperCase();
+            if (rpta.equals("Si")) return true;
+            if (rpta.equals("No")) return false;
+            System.out.println("Responda con Si o No.");
+        }
+    }
+
+    public static String leerTipoCuenta(Scanner scanner, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String tipo = scanner.nextLine().trim().toUpperCase();
+
+            if (tipo.equals("AHORRO") || tipo.equals("CTE")) {
+                return tipo;
             }
+
+            System.out.println("Tipo de cuenta inválido. Opciones válidas: AHORRO o CTE.");
         }
     }
 
