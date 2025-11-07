@@ -4,11 +4,10 @@ import java.util.Scanner;
 
 public class Banco {
 
-    // === Estado del sistema (modelo) ===
     private final Scanner scannerConsola;
     private final ArrayList<Cliente> listaClientes = new ArrayList<>();
     private final ArrayList<Empleado> listaEmpleados = new ArrayList<>();
-    private final ArrayList<Cuenta>   listaCuentas   = new ArrayList<>();
+    private final ArrayList<Cuenta> listaCuentas = new ArrayList<>();
 
     public Banco(Scanner scannerConsola) {
         this.scannerConsola = scannerConsola;
@@ -17,13 +16,13 @@ public class Banco {
     // ============ REGISTROS ============
     public void registrarEmpleado() {
         System.out.println("\n=== Registrar Empleado ===");
-        String dniEmpleado      = Validador.leerDNI(scannerConsola,     "DNI (8 dígitos): ");
-        String nombreEmpleado   = Validador.leerNombre(scannerConsola,  "Nombre completo: ");
-        String telefonoEmpleado = Validador.leerTelefono(scannerConsola,"Teléfono: ");
-        String correoEmpleado   = Validador.leerEmail(scannerConsola,   "Correo electrónico: ");
-        String idEmpleado       = Validador.leerIdCorto(scannerConsola, "ID empleado (ej. EMP01): ");
-        String cargoEmpleado    = Validador.leerCargo(scannerConsola,   "Cargo: ");
-        String direccionEmpleado = "-"; // mínimo para constructor
+        String dniEmpleado = Validador.leerDNI(scannerConsola, "DNI (8 dígitos): ");
+        String nombreEmpleado = Validador.leerNombre(scannerConsola, "Nombre completo: ");
+        String telefonoEmpleado = Validador.leerTelefono(scannerConsola, "Teléfono: ");
+        String correoEmpleado = Validador.leerEmail(scannerConsola, "Correo electrónico: ");
+        String idEmpleado = Validador.leerIdCorto(scannerConsola, "ID empleado (ej. EMP01): ");
+        String cargoEmpleado = Validador.leerCargo(scannerConsola, "Cargo: ");
+        String direccionEmpleado = "-";
 
         Empleado nuevoEmpleado = new Empleado(
                 dniEmpleado, nombreEmpleado, direccionEmpleado, telefonoEmpleado, correoEmpleado,
@@ -35,11 +34,27 @@ public class Banco {
 
     public void registrarCliente() {
         System.out.println("\n=== Registrar Cliente ===");
-        String dniCliente      = Validador.leerDNI(scannerConsola,      "DNI (8 dígitos): ");
-        String nombreCliente   = Validador.leerNombre(scannerConsola,   "Nombre completo: ");
+        String dniCliente = Validador.leerDNI(scannerConsola, "DNI (8 dígitos): ");
+
+        String nombreCliente;
+        do {
+            nombreCliente = Validador.leerNombre(scannerConsola, "Nombre completo: ");
+            if (!nombreCliente.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+                System.out.println("El nombre no puede contener símbolos ni números. Intente nuevamente.");
+            }
+        } while (!nombreCliente.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+"));
+
         String telefonoCliente = Validador.leerTelefono(scannerConsola, "Teléfono: ");
-        String correoCliente   = Validador.leerEmail(scannerConsola,    "Correo electrónico: ");
-        String idCliente       = Validador.leerIdCorto(scannerConsola,  "ID cliente (ej. CLI01): ");
+        String correoCliente = Validador.leerEmail(scannerConsola, "Correo electrónico: ");
+
+        String idCliente;
+        do {
+            idCliente = Validador.leerIdCorto(scannerConsola, "ID cliente (ej. CLI01): ");
+            if (!idCliente.matches("[a-zA-Z0-9]+")) {
+                System.out.println("El ID no puede contener símbolos. Intente nuevamente.");
+            }
+        } while (!idCliente.matches("[a-zA-Z0-9]+"));
+
         String direccionCliente = "—";
 
         Cliente nuevoCliente = new Cliente(
@@ -51,10 +66,7 @@ public class Banco {
 
     public void crearCuenta() {
         System.out.println("\n=== Crear Cuenta ===");
-        // número de cuenta ingresado (validado)
         String numeroCuenta = Validador.leerNumeroCuenta(scannerConsola, "Nº de cuenta (10-20 dígitos): ");
-
-        // titular principal
         String idODniTitular = Validador.leerIdCorto(scannerConsola, "ID/DNI del titular: ");
         Cliente titular = buscarClientePorIdODni(idODniTitular);
         if (titular == null) {
@@ -65,7 +77,6 @@ public class Banco {
         ArrayList<Cliente> titularesCuenta = new ArrayList<>();
         titularesCuenta.add(titular);
 
-        // tipo mínimo fijo (simple) para mantenerlo esencial
         String tipoCuenta = "Ahorros";
         double saldoInicial = 0.0;
 
@@ -122,9 +133,9 @@ public class Banco {
 
         List<Transaccion> movimientos;
         try {
-            movimientos = cuenta.getMovimientos();     // si tu clase Cuenta expone este método
+            movimientos = cuenta.getMovimientos();
         } catch (Throwable e) {
-            movimientos = cuenta.listarMovimientos();  // o este otro
+            movimientos = cuenta.listarMovimientos();
         }
 
         if (movimientos == null || movimientos.isEmpty()) {
@@ -134,6 +145,29 @@ public class Banco {
         System.out.println("---- MOVIMIENTOS ----");
         for (Transaccion transaccion : movimientos) {
             System.out.println(transaccion);
+        }
+    }
+
+    // ============ MÉTODO VER CLIENTE ============
+    public void verCliente() {
+        System.out.println("\n=== Ver Cliente ===");
+        if (listaClientes.isEmpty()) {
+            System.out.println("No hay clientes registrados.");
+            return;
+        }
+
+        String idODni = Validador.leerIdCorto(scannerConsola, "Ingrese ID o DNI del cliente: ");
+        Cliente cliente = buscarClientePorIdODni(idODni);
+
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado.");
+        } else {
+            System.out.println("----- Datos del cliente -----");
+            System.out.println("Nombre: " + cliente.getNombre());
+            System.out.println("DNI: " + cliente.getDni());
+            System.out.println("Teléfono: " + cliente.getTelefono());
+            System.out.println("Correo: " + cliente.getEmail());
+            System.out.println("ID: " + cliente.getIdCliente());
         }
     }
 
@@ -199,5 +233,5 @@ public class Banco {
 
     public ArrayList<Cliente> getClientes() { return listaClientes; }
     public ArrayList<Empleado> getEmpleados() { return listaEmpleados; }
-    public ArrayList<Cuenta>   getCuentas()   { return listaCuentas; }
+    public ArrayList<Cuenta> getCuentas() { return listaCuentas; }
 }
