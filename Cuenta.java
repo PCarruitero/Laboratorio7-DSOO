@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 /**
- Clase Cuenta
- Representa una cuenta bancaria con soporte para depósitos, retiros
- y registro de movimientos. El saldo se maneja con redondeo a 2 decimales.
+ * Clase Cuenta
+ * Representa una cuenta bancaria con soporte para depósitos, retiros
+ * y registro de movimientos. El saldo se maneja con redondeo a 2 decimales.
  */
 public class Cuenta {
 
@@ -13,7 +13,13 @@ public class Cuenta {
     private ArrayList<Transaccion> movimientos;
     private ArrayList<Cliente> titulares;
 
-    //Constructor de la cuenta
+    /**
+     * Constructor de la cuenta.
+     * @param numero         Número identificador.
+     * @param tipo           Tipo de cuenta (AHORRO/CTE).
+     * @param saldoInicial   Saldo inicial (positivo).
+     * @param titulares      Lista de clientes titulares.
+     */
     public Cuenta(String numero, String tipo, double saldoInicial, ArrayList<Cliente> titulares) {
         this.numero = numero;
         this.tipo = tipo;
@@ -22,34 +28,30 @@ public class Cuenta {
         this.movimientos = new ArrayList<>();
     }
 
-    //Redondea un monto a 2 decimales.
+    // --- Utilidad privada para redondear a 2 decimales ---
     private double redondear(double monto) {
-        return Math.round(monto * 100) / 100f;
+        return Math.round(monto * 100) / 100.0;
     }
 
-    // ====================================
-    // GETTERS
-    // ====================================
-    public String getNumero() { return numero; }
-    public String getTipo() { return tipo; }
-    public double getSaldo() { return saldo; }
-    public ArrayList<Cliente> getTitulares() { return titulares; }
+    // ====== GETTERS ======
+    public String getNumero()         { return numero; }
+    public String getTipo()           { return tipo; }
+    public double getSaldo()          { return saldo; }
+    public ArrayList<Cliente> getTitulares()    { return titulares; }
     public ArrayList<Transaccion> getMovimientos() { return movimientos; }
 
-    // ====================================
-    // SETTERS
-    // ====================================
-    public void setNumero(String numero) { this.numero = numero; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
-    public void setSaldo(float saldo) { this.saldo = redondear(saldo); }
+    // ====== SETTERS ======
+    public void setNumero(String numero)              { this.numero = numero; }
+    public void setTipo(String tipo)                  { this.tipo = tipo; }
+    public void setSaldo(double saldo)                { this.saldo = redondear(saldo); }
     public void setTitulares(ArrayList<Cliente> titulares) { this.titulares = titulares; }
 
-    // ====================================
-    // MÉTODOS DE NEGOCIO
-    // ====================================
+    // ====== MÉTODOS DE NEGOCIO ======
 
     /**
-     * Acredita un monto a la cuenta.
+     * Deposita/acredita un monto a la cuenta.
+     * @param monto         Monto a depositar.
+     * @param transaccion   Transaccion generada por depósito.
      */
     public void acreditar(double monto, Transaccion transaccion) {
         saldo = redondear(saldo + monto);
@@ -57,7 +59,10 @@ public class Cuenta {
     }
 
     /**
-     * Debita un monto si hay saldo suficiente.
+     * Intenta debitar un monto si hay saldo suficiente.
+     * @param monto         Monto a debitar.
+     * @param transaccion   Transacción generada por retiro.
+     * @return true si el retiro se procesó; false en caso de saldo insuficiente.
      */
     public boolean debitar(double monto, Transaccion transaccion) {
         if (saldo >= monto) {
@@ -69,16 +74,19 @@ public class Cuenta {
     }
 
     /**
-     * Retorna la lista completa de movimientos.
+     * Retorna una copia de la lista completa de movimientos.
      */
     public ArrayList<Transaccion> listarMovimientos() {
-        return movimientos;
+        return new ArrayList<>(movimientos);
     }
 
     /**
-     * Agrega un nuevo titular a la cuenta.
+     * Agrega un nuevo titular (cliente) a la cuenta.
+     * @param cliente Cliente a agregar.
      */
     public void agregarTitular(Cliente cliente) {
         titulares.add(cliente);
     }
+
+    // Puedes agregar aquí excepciones personalizadas si manejas errores específicos.
 }
